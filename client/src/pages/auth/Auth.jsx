@@ -2,9 +2,14 @@ import React from "react";
 import "./Auth.css";
 import Logo from "../../img/logo.png";
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { logIn, signUp } from "../../actions/AuthAction";
 
 const Auth = () => {
+  const dispatch = useDispatch();
+  const loading = useSelector((state) => state.authReducer.loading);
   const [isSignUp, setIsSignUp] = useState(true);
+  console.log(loading);
   const [data, setData] = useState({
     firstname: "",
     lastname: "",
@@ -21,14 +26,14 @@ const Auth = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if(isSignUp)
-    {
-      if(data.password !== data.confirmpass)
-      {
-        setConfirmPass(false);
-      }
+    if (isSignUp) {
+      data.password === data.confirmpass
+        ? dispatch(signUp(data))
+        : setConfirmPass(false);
+    }else{
+      dispatch(logIn(data))
     }
-  }
+  };
 
   const resetForm = () => {
     setConfirmPass(true);
@@ -39,7 +44,7 @@ const Auth = () => {
       password: "",
       confirmpass: "",
     });
-  }
+  };
 
   return (
     <div className="Auth">
@@ -121,15 +126,18 @@ const Auth = () => {
           <div>
             <span
               style={{ fontSize: "12px", cursor: "pointer" }}
-              onClick={() => {setIsSignUp((prev) => !prev); resetForm()}}
+              onClick={() => {
+                setIsSignUp((prev) => !prev);
+                resetForm();
+              }}
             >
               {isSignUp
                 ? "Already have an account? Login"
                 : "Don't have an account? Sign Up"}
             </span>
           </div>
-          <button className="button sign-btn" type="submit">
-            {isSignUp ? "Sign Up" : "Log In"}
+          <button className="button sign-btn" type="submit" disabled={loading}>
+            {loading ? "Loading..." : isSignUp ? "Sign Up" : "Log In"}
           </button>
         </form>
       </div>
