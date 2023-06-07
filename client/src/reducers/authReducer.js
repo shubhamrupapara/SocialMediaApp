@@ -14,7 +14,7 @@ const authReducer = (
     case "UPDATING_START":
       return { ...state, updateLoading: true, error: false };
     case "UPDATING_SUCCESS":
-      localStorage.setItem('profile', JSON.stringify({...action?.data}));
+      localStorage.setItem("profile", JSON.stringify({ ...action?.data }));
       return {
         ...state,
         authData: action.data,
@@ -23,6 +23,34 @@ const authReducer = (
       };
     case "UPDATING_FAIL":
       return { ...state, updateLoading: false, error: true };
+
+    case "FOLLOW_USER":
+      return {
+        ...state,
+        authData: {
+          ...state.authData,
+          user: {
+            ...state.authData.user,
+            followings: [...state.authData.user.followings, action.data]
+          }
+        }
+      };
+
+    case "UNFOLLOW_USER":
+      return {
+        ...state,
+        authData: {
+          ...state.authData,
+          user: {
+            ...state.authData.user,
+            followings: [
+              ...state.authData.user.followings.filter(
+                (personId) => personId !== action.data
+              )
+            ]
+          }
+        }
+      };
 
     case "LOG_OUT":
       return { ...state, authData: null, loading: false, error: false };
