@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import { useEffect } from "react";
 import { userChats } from "../../api/ChatRequest.js";
+import Conversation from "../../components/conversation/Conversation";
 
 const Chat = () => {
   const { user } = useSelector((state) => state.authReducer.authData);
@@ -14,16 +15,16 @@ const Chat = () => {
   useEffect(() => {
     const getChats = async () => {
       try {
-        const {data} = await userChats(user._id);
+        const { data } = await userChats(user._id);
         setChats(data);
         console.log(data);
       } catch (error) {
         console.log(error);
       }
-    }
+    };
     getChats();
   }, [user]);
-  
+
   return (
     <div className="Chat">
       {/* Left Side */}
@@ -31,7 +32,13 @@ const Chat = () => {
         <LogoSearch />
         <div className="Chat-container">
           <h2>Chats</h2>
-          <div className="Chat-list">Conversations</div>
+          <div className="Chat-list">
+            {chats.map((chat) => (
+              <div>
+                <Conversation data={chat} currentUserId={user._id} />
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
