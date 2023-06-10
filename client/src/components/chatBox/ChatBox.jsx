@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { addMessage, getMessages } from "../../api/MessageRequest";
 import { getUser } from "../../api/UserRequest";
 import "./ChatBox.css";
@@ -9,6 +9,7 @@ const ChatBox = ({ chat, currentUser, setSendMessage, receiveMessage }) => {
   const [userData, setUserData] = useState(null);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
+  const scroll = useRef();
 
   const handleChange = (newMessage) => {
     setNewMessage(newMessage);
@@ -70,6 +71,12 @@ const ChatBox = ({ chat, currentUser, setSendMessage, receiveMessage }) => {
     setSendMessage({ ...message, receiverId });
   };
 
+  // always scroll to the last message
+  useEffect(() => {
+    scroll.current?.scrollIntoView({ behavior: "smooth" })
+  }, [messages])
+
+
   return (
     <>
       <div className="ChatBox-container">
@@ -102,7 +109,7 @@ const ChatBox = ({ chat, currentUser, setSendMessage, receiveMessage }) => {
                 style={{
                   width: "95%",
                   border: "0.1px solid #ececec",
-                  marginTop: "20px",
+                  marginTop: "20px", 
                 }}
               />
             </div>
@@ -110,7 +117,7 @@ const ChatBox = ({ chat, currentUser, setSendMessage, receiveMessage }) => {
             <div className="chat-body">
               {messages.map((message) => (
                 <>
-                  <div
+                  <div ref = {scroll}
                     className={
                       message.senderId === currentUser
                         ? "message own"
