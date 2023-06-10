@@ -6,11 +6,14 @@ import { useSelector } from "react-redux";
 import { useEffect } from "react";
 import { userChats } from "../../api/ChatRequest.js";
 import Conversation from "../../components/conversation/Conversation";
+import ChatBox from "../../components/chatBox/ChatBox";
+import NavIcons from "../../components/navIcons/NavIcons";
 
 const Chat = () => {
   const { user } = useSelector((state) => state.authReducer.authData);
 
   const [chats, setChats] = useState([]);
+  const [currentChat, setCurrentChat] = useState(null);
 
   useEffect(() => {
     const getChats = async () => {
@@ -34,7 +37,7 @@ const Chat = () => {
           <h2>Chats</h2>
           <div className="Chat-list">
             {chats.map((chat) => (
-              <div>
+              <div onClick={() => setCurrentChat(chat)}>
                 <Conversation data={chat} currentUserId={user._id} />
               </div>
             ))}
@@ -43,7 +46,14 @@ const Chat = () => {
       </div>
 
       {/* Right Side */}
-      <div className="Right-side-chat">Right Side</div>
+      <div className="Right-side-chat">
+        <div style={{ width: "20rem", alignSelf: "flex-end" }}>
+          <NavIcons />
+        </div>
+
+        {/* chat body */}
+        <ChatBox chat={currentChat} currentUser={user._id} />
+      </div>
     </div>
   );
 };

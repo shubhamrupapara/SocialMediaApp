@@ -11,7 +11,7 @@ const Conversation = ({ data, currentUserId }) => {
       try {
         const { data } = await getUser(userId);
         setUserData(data);
-        console.log(data);
+        // console.log(data);
       } catch (error) {
         console.log(error);
       }
